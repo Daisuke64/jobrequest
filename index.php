@@ -1,3 +1,35 @@
+<?php
+    session_start(); //this will allows us to use the $_SESSION variables
+    require 'functions/jobreqDAO.php';
+    $requestdao = new RequestAccessObject;
+    if(isset($_POST['login'])){
+        $useremail = $_POST['useremail'];
+        $password = $_POST['password'];
+        //login function will search if the enterd username and password
+        //is inside the table cutomer
+        //if it is inside, the result of the function will be assigned
+        //to the variable $credentials
+        $credentials = $requestdao->login($useremail, $password);
+        // checker
+        $adminCredentials = $requestdao->adminLogin($useremail, $password);
+
+        if(!empty($credentials)){
+            $_SESSION['id'] = $credentials['requestor_id'];
+            $_SESSION['name'] = $credentials['requestor_fname'];
+            $_SESSION['logstat'] = "Active";
+            header('Location: requestor/requestor_main.php');
+        }elseif(!empty($adminCredentials)){
+            $_SESSION['id'] = $adminCredentials['admin_id'];
+            $_SESSION['name'] = $adminCredentials['admin_fname'];
+            $_SESSION['logstat'] = "Active";
+            header('Location: admin/admin_main.php');
+        }else{
+            echo "USER NOT FOUND!";
+        }
+    }
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,7 +44,7 @@
     <title>Document</title>
 </head>
 <body>
-        <div class="jumbotron">
+        <div class="jumbotron bg-dark text-white text-center">
             <h1 class="display-4">Login</h1>
         </div>
         
@@ -20,14 +52,16 @@
             <form action="" method="post">
                 <div class="form-group">
                 <label for="">Email</label>
-                <input type="text" name="username" id="" class="form-control">
+                <input type="text" name="useremail" id="" class="form-control">
                 </div>
                 <div class="form-group">
                 <label for="">Password</label>
                 <input type="password" name="password" id="" class="form-control">
                 </div>
-                <input type="submit" value="login" name="login" class="btn btn-primary">
-
+                <div class="text-center">
+                <input type="submit" value="login" name="login" class="btn btn-dark btn-lg">
+                <p>or</p><a class="" href="account.php">create NEW ACCOUNT</a>
+                </div>
             </form>
 
         </div>

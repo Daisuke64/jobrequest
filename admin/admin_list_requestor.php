@@ -1,3 +1,15 @@
+<?php
+    session_start(); //this will allows us to use the $_SESSION variables
+    if($_SESSION['logstat'] !="Active"){
+        header('Location: ../loginout.php');
+    }
+    require "../functions/jobreqDAO.php";
+    $requestdao = new RequestAccessObject;
+    $requestorlist = $requestdao->retrieveAllRequestors();
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,9 +24,13 @@
     <title>Requestor List</title>
 </head>
 <body>
-    <div class="jumbotron bg-primary text-white">
-        <h1 class="display-4">Requestor List</h1>
+    <div class="jumbotron bg-primary text-white text-center">
+        <h1 class="display-4"><i class="fas fa-users"></i> Requestor List</h1>
     </div>
+
+    <nav class="navbar navbar-expand-sm navbar-dark fixed-top">
+        <a class="navbar-brand" href="admin_main.php">Back</a>
+    </nav>
 
     <div class="container-flued mx-3 mt-3" id="section1">
  
@@ -27,24 +43,24 @@
                     <th>Home Address</th>
                     <th>Phone Number</th>
                     <th>Email Address</th>
-                    <th>Account Name</th>
-                    <th>Account Password</th>
+                    <th>Password</th>
+                    <th>Registered Date</th>
                     <th colspan="2">Edit</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php
-                    foreach($custlist as $key=>$value){
+                    foreach($requestorlist as $key=>$value){
                         echo "<tr>";
-                                echo "<td>".$value['cust_fname']."</td>";
-                                echo "<td>".$value['cust_lname']."</td>";
-                                echo "<td>".$value['cust_dob']."</td>";
-                                echo "<td>".$value['cust_address']."</td>";
-                                echo "<td>".$value['cust_login_name']."</td>";
-                                echo "<td>".$value['cust_phone']."</td>";
-                                echo "<td>".$value['cust_register_date']."</td>";
-                                echo "<td><a href='customer_edit.php?id=".$value['cust_id']."' role='button' class='btn btn-warning'><i class='fas fa-edit'></i></a></td>";
-                                echo "<td><a href='customer_delete.php?id=".$value['cust_id']."' role='button' class='btn btn-danger'><i class='fas fa-trash'></i></a></td>";
+                                echo "<td>".$value['requestor_id']."</td>";                
+                                echo "<td>".$value['requestor_fname']."</td>";
+                                echo "<td>".$value['requestor_lname']."</td>";
+                                echo "<td>".$value['requestor_address']."</td>";
+                                echo "<td>".$value['requestor_phone']."</td>";
+                                echo "<td>".$value['requestor_email']."</td>";
+                                echo "<td>".$value['requestor_password']."</td>";
+                                echo "<td>".date('M d, Y', strtotime($value['requestor_register_date']))."</td>";
+                                echo "<td><a href='admin_status/admin_delete_req.php?id=".$value['requestor_id']."' role='button' class='btn btn-danger'><i class='fas fa-trash'></i></a></td>";
                         echo "</tr>";
                     }
 

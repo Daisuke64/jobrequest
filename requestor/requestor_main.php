@@ -1,3 +1,27 @@
+<?php
+    session_start(); //this will allows us to use the $_SESSION variables
+    if($_SESSION['logstat'] !="Active"){
+        header('Location: ../loginout.php');
+    }
+    require "../functions/jobreqDAO.php";
+    $requestdao = new RequestAccessObject;
+    $requestlist = $requestdao->retrieveAllJobs($_SESSION['id']);
+
+
+    if(isset($_POST['add'])){
+        //intialization of variables
+        //getting the data from the form
+       $job_name = $_POST['job_name'];
+       $job_type = $_POST['job_type'];
+       $job_date_needed = $_POST['job_date_needed'];
+       $job_address = $_POST['job_address'];
+       $job_detail = $_POST['job_detail'];
+       $requestor_id = $_SESSION['id'];
+       $requestdao->addJob($job_name, $job_type, $job_date_needed, $job_address, $job_detail, $requestor_id);
+       header('Location: requestor_main.php'); //this will redirect us to the product table after product adding
+    }
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,9 +39,13 @@
 
 </head>
 <body>
-    <div class="jumbotron bg-warning text-white">
-        <h1 class="display-4">Your Dashboard</h1>
+    <div class="jumbotron bg-warning text-white text-center">
+        <h1 class="display-4"><i class="fas fa-user-edit"></i> Your Dashboard</h1>
     </div>
+
+    <nav class="navbar navbar-expand-sm navbar-dark fixed-top">
+        <a class="navbar-brand" href="../index.php">Logout</a>
+    </nav>
 
     <div class="container-flued px-3">
         <table class="table table-striped">
@@ -30,22 +58,30 @@
             <th>Date Needed</th>
             <th>Register Date</th>
             <th>Detail</th>
-            <th colspan="2">Edit</th>
+            <th>Result</th>
+            <th colspan="3">   Edit</th>
             </tr>
         </thead>
         <tbody>
             <?php
-            foreach($custlist as $key=>$value){
+            foreach($requestlist as $key=>$value){
                 echo "<tr>";
-                        echo "<td>".$value['cust_fname']."</td>";
-                        echo "<td>".$value['cust_lname']."</td>";
-                        echo "<td>".$value['cust_dob']."</td>";
-                        echo "<td>".$value['cust_address']."</td>";
-                        echo "<td>".$value['cust_login_name']."</td>";
-                        echo "<td>".$value['cust_phone']."</td>";
-                        echo "<td>".$value['cust_register_date']."</td>";
-                        echo "<td><a href='customer_edit.php?id=".$value['cust_id']."' role='button' class='btn btn-warning'><i class='fas fa-edit'></i></a></td>";
-                        echo "<td><a href='customer_delete.php?id=".$value['cust_id']."' role='button' class='btn btn-danger'><i class='fas fa-trash'></i></a></td>";
+                        echo "<td>".$value['job_id']."</td>";
+                        echo "<td>".$value['job_name']."</td>";
+                        echo "<td>".$value['job_type']."</td>";
+                        echo "<td>".$value['job_address']."</td>";
+                        echo "<td>".$value['job_date_needed']."</td>";
+                        echo "<td>".date('M d, Y', strtotime($value['job_register_date']))."</td>";
+                        echo "<td>".$value['job_detail']."</td>";
+                        if($value['job_status'] == "A"){
+                            echo "<td><i class='far fa-thumbs-up'></i><td>";
+                        }elseif($value['job_status'] == "D"){
+                            echo "<td><i class='far fa-thumbs-down'></i><td>";
+                        }else{
+                            echo "<td><i class='far fa-pause-circle'></i><td>";
+                        }
+                        echo "<td><a href='requestor_edit.php?id=".$value['job_id']."' role='button' class='btn btn-warning'><i class='fas fa-edit'></i></a></td>";
+                        echo "<td><a href='requestor_delete.php?id=".$value['job_id']."' role='button' class='btn btn-danger'><i class='fas fa-trash'></i></a></td>";
                 echo "</tr>";
             }
 
@@ -60,43 +96,39 @@
                         <div><h3>New request </h3></div>
                         <div class="form-group px-3">
                         <label for="" class="mr-2">Request Name</label>
-                            <input type="text" name="cust_fname" id="" class="form-control mr-2">
+                            <input type="text" name="job_name" id="" class="form-control mr-2">
                         </div>
                         <div class="form-inline p-3">
                             <label for="" class="mr-2">Type</label>
-                                <select name="prod_id" id="" class="form-control mr-2">
-                                    <option value="---">Please Choose a Product</option>
-                                    <?php
-                                        foreach($prodlist as $key => $values){
-                                            echo "<option value='".$values['prod_id']."'>".$values['prod_name']."</option>";
-                                        }
-                                    ?>
+                                <select name="job_type" id="" class="form-control mr-2">
+                                    <option value="">Please Choose a Type</option>
+                                    <option value="Home Repair">Home Repair</option>
+                                    <option value="Cleaning Service">Cleaning Service</option>
+                                    <option value="Pest Control">Pest Control</option>
                                 </select>
 
                             <label for="" class="mr-2">Date Needed</label>
-                            <input type="date" name="cust_lname" id="" class="form-control mr-2">
+                            <input type="date" name="job_date_needed" id="" class="form-control mr-2">
 
                         </div>
                         <div class="form-group px-3">
                             <label for="" class="mr-2">Place/Office Address</label>
-                            <input type="text" name="cust_address" id="" class="form-control">
+                            <input type="text" name="job_address" id="" class="form-control">
                         </div>
                         <div class="px-3">
-                            <form>
                             <label for="">Request Detail</label>
-                            <textarea name="user_bio" id="editor1" rows="10" cols="80">
-                            <?php echo $user['user_bio'] ?>
+                            <textarea name="job_detail" id="editor1" rows="10" cols="80">
+
                             </textarea>
                             <script>
                             // Replace the <textarea id="editor1"> with a CKEditor
                             // instance, using default configuration.
                             CKEDITOR.replace( 'editor1' );
                             </script>
-                            </form>
-                        </div>
+                            </div>
                         <div class="pt-3 text-right">
-                        <input type="reset" value="Reset" name="add" class="btn btn-danger">
-                        <input type="submit" value="Update Request" name="update" class="btn btn-primary">  
+                        <input type="reset" value="Reset" name="reset" class="btn btn-danger">
+                        <input type="submit" value="Post Request" name="add" class="btn btn-primary">  
                         </div> 
                     </form>
    </div>

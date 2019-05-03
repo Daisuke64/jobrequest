@@ -1,3 +1,14 @@
+<?php
+    session_start(); //this will allows us to use the $_SESSION variables
+    if($_SESSION['logstat'] !="Active"){
+        header('Location: ../loginout.php');
+    }
+    require "../functions/jobreqDAO.php";
+    $requestdao = new RequestAccessObject;
+    $JobRequestorPlist = $requestdao->retrieveAllJobsRequestorsP();
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,9 +23,13 @@
     <title>Pending Requests</title>
 </head>
 <body>
-    <div class="jumbotron bg-primary text-white">
-        <h1 class="display-4">Pending Requests</h1>
+    <div class="jumbotron bg-primary text-white text-center">
+        <h1 class="display-4"><i class="fas fa-archive"></i> Pending Requests</h1>
     </div>
+
+    <nav class="navbar navbar-expand-sm navbar-dark fixed-top">
+        <a class="navbar-brand" href="admin_main.php">Back</a>
+    </nav>
 
     <div class="container-flued mx-3 mt-3" id="section1">
  
@@ -26,25 +41,26 @@
                     <th>Type</th>
                     <th>Place/Office Address</th>
                     <th>Date Needed</th>
-                    <th>Detail</th>
                     <th>Register Date</th>
-                    <th>Requestor</th>
+                    <th>Detail</th>
+                    <th>Requestor Name</th>
                     <th colspan="2">Edit</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php
-                    foreach($custlist as $key=>$value){
+                    foreach($JobRequestorPlist as $key=>$value){
                         echo "<tr>";
-                                echo "<td>".$value['cust_fname']."</td>";
-                                echo "<td>".$value['cust_lname']."</td>";
-                                echo "<td>".$value['cust_dob']."</td>";
-                                echo "<td>".$value['cust_address']."</td>";
-                                echo "<td>".$value['cust_login_name']."</td>";
-                                echo "<td>".$value['cust_phone']."</td>";
-                                echo "<td>".$value['cust_register_date']."</td>";
-                                echo "<td><a href='customer_edit.php?id=".$value['cust_id']."' role='button' class='btn btn-warning'><i class='fas fa-edit'></i></a></td>";
-                                echo "<td><a href='customer_delete.php?id=".$value['cust_id']."' role='button' class='btn btn-danger'><i class='fas fa-trash'></i></a></td>";
+                        echo "<td>".$value['job_id']."</td>";
+                        echo "<td>".$value['job_name']."</td>";
+                        echo "<td>".$value['job_type']."</td>";
+                        echo "<td>".$value['job_address']."</td>";
+                        echo "<td>".$value['job_date_needed']."</td>";
+                        echo "<td>".date('M d, Y', strtotime($value['job_register_date']))."</td>";
+                        echo "<td>".$value['job_detail']."</td>";
+                        echo "<td>".$value['requestor_fname']." ".$value['requestor_lname']."</td>";
+                        echo "<td><a href='admin_status/admin_changeA.php?id=".$value['job_id']."' role='button' class='btn btn-warning'><i class='far fa-thumbs-up'></i></a></td>";
+                        echo "<td><a href='admin_status/admin_changeD.php?id=".$value['job_id']."' role='button' class='btn btn-danger'><i class='far fa-thumbs-down'></i></a></td>";
                         echo "</tr>";
                     }
 

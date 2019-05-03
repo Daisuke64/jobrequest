@@ -1,3 +1,27 @@
+<?php
+
+    session_start(); //this will allows us to use the $_SESSION variables
+    if($_SESSION['logstat'] !="Active"){
+        header('Location: loginout.php');
+    }
+ 
+   require 'functions/jobreqDAO.php';
+   $requestdao = new RequestAccessObject;
+   if(isset($_POST['add'])){
+       //intialization of variables
+       //getting the data from the form
+      $requestor_fname = $_POST['requestor_fname'];
+      $requestor_lname = $_POST['requestor_lname'];
+      $requestor_address = $_POST['requestor_address'];
+      $requestor_phone = $_POST['requestor_phone'];
+      $requestor_email = $_POST['requestor_email'];
+      $requestor_password = $_POST['requestor_password'];
+      $requestdao->addrequestor($requestor_fname, $requestor_lname, $requestor_address, $requestor_phone, $requestor_email, $requestor_password);
+      header('Location: index.php'); //this will redirect us to the product table after product adding
+   }
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,42 +36,43 @@
     <title>Create New Account</title>
 </head>
 <body>
-    <div class="jumbotron bg-primary">
+    <div class="jumbotron bg-dark text-white text-center">
         <h1 class="display-4">Create New Account</h1>    
     </div>
+
+    <nav class="navbar navbar-expand-sm navbar-dark fixed-top">
+        <a class="navbar-brand" href="index.php">Back</a>
+    </nav>
+
     <div class="container mt-3">
         <form action="" method="post">
             <div class="form-group">
                 <label for="">First Name</label>
-                <input type="text" name="cust_fname" id="" class="form-control">
+                <input type="text" name="requestor_fname" id="" class="form-control">
             </div>
             <div class="form-group">
                 <label for="">Last Name</label>
-                <input type="text" name="cust_lname" id="" class="form-control">
+                <input type="text" name="requestor_lname" id="" class="form-control">
             </div>
             <div class="form-group">
                 <label for="">Home Address</label>
-                <input type="text" name="cust_address" id="" class="form-control">
+                <input type="text" name="requestor_address" id="" class="form-control">
             </div>    
             <div class="form-group">
                 <label for="">Phone Number</label>
-                <input type="text" name="cust_login_name" id="" class="form-control">
+                <input type="text" name="requestor_phone" id="" class="form-control">
             </div>  
             <div class="form-group">
                 <label for="">Email Address</label>
-                <input type="text" name="cust_login_password" id="" class="form-control">
+                <input type="text" name="requestor_email" id="" class="form-control">
             </div>  
             <div class="form-group mb-3">
-                <label for="">Account Name</label>
-                <input type="text" name="cust_phone" id="" class="form-control">
-            </div>
-            <div class="form-group mb-3">
-                <label for="">Account Password</label>
-                <input type="password" name="cust_phone" id="" class="form-control">
+                <label for="">Password</label>
+                <input type="password" name="requestor_password" id="" class="form-control">
             </div>
        
             <input type="reset" value="Reset" name="add" class="btn btn-danger">
-            <input type="submit" value="Creat" name="add" class="btn btn-primary">
+            <input type="submit" value="Create" name="add" class="btn btn-dark">
 
             </div>
         </form>

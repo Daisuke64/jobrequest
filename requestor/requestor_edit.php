@@ -1,3 +1,26 @@
+<?php
+    session_start(); //this will allows us to use the $_SESSION variables
+    if($_SESSION['logstat'] !="Active"){
+        header('Location: ../loginout.php');
+    }
+
+    require '../functions/jobreqDAO.php';
+   $requestdao = new requestAccessObject;
+   $job_id = $_GET['id']; //this will hold the id passed from the url
+   $job = $requestdao->retrieveSingleJob($job_id);
+   if(isset($_POST['update'])){
+       //intialization of variables
+       //getting the data from the form
+        $job_name = $_POST['job_name'];
+        $job_type = $_POST['job_type'];
+        $job_date_needed = $_POST['job_date_needed'];
+        $job_address = $_POST['job_address'];
+        $job_detail = $_POST['job_detail'];
+        $requestdao->updateJob($job_name, $job_type, $job_date_needed, $job_address, $job_detail, $job_id);
+        header('Location: requestor_main.php'); //this will redirect us to the product table after product adding
+   }
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,7 +38,7 @@
 
 </head>
 <body>
-    <div class="jumbotron bg-warning">
+    <div class="jumbotron bg-warning text-center">
         <h1 class="display-4">Edit Job Request</h1>    
     </div>
 
@@ -23,42 +46,38 @@
         <form action="" method="post">
             <div class="form-group">
                 <label for="">Request Name</label>
-                <input type="text" name="cust_fname" id="" class="form-control" value="<?php echo $customer['cust_fname'] ?>">
+                <input type="text" name="job_name" id="" class="form-control" value="<?php echo $job['job_name'] ?>">
             </div>
             <div class="form-group">
                 <label for="">Type</label>
-                    <select name="prod_id" id="" class="form-control mr-2">
-                    <option value="---">Please Choose a Product</option>
-                    <?php
-                        foreach($prodlist as $key => $values){
-                            echo "<option value='".$values['prod_id']."'>".$values['prod_name']."</option>";
-                        }
-                    ?>
-                    </select>
+                <select name="job_type" id="" class="form-control mr-2">
+                                    <option selected value="<?php echo $job['job_type'] ?>"><?php echo $job['job_type'] ?></option>
+                                    <option value="Home Repair">Home Repair</option>
+                                    <option value="Cleaning Service">Cleaning Service</option>
+                                    <option value="Pest Control">Pest Control</option>
+                                </select>
             </div>
             <div class="form-group">
                 <label for="">Place/Office Address</label>
-                <input type="text" name="cust_dob" id="" class="form-control" value="<?php echo $customer['cust_dob'] ?>">
+                <input type="text" name="job_address" id="" class="form-control" value="<?php echo $job['job_address'] ?>">
             </div>
             <div class="form-group">
                 <label for="">Date Needed</label>
-                <input type="date" name="cust_address" id="" class="form-control" value="<?php echo $customer['cust_address'] ?>">
+                <input type="date" name="job_date_needed" id="" class="form-control" value="<?php echo $job['job_date_needed'] ?>">
             </div>    
             <div class="form-group">
-                <form>
                 <label for="">Request Detail</label>
-                <textarea name="user_bio" id="editor1" rows="10" cols="80">
-                <?php echo $user['user_bio'] ?>
+                <textarea name="job_detail" id="editor1" rows="10" cols="80">
+                <?php echo $job['job_detail'] ?>
                 </textarea>
                 <script>
                 // Replace the <textarea id="editor1"> with a CKEditor
                 // instance, using default configuration.
                 CKEDITOR.replace( 'editor1' );
                 </script>
-                </form>
             </div> 
             <div class="mb-5">
-            <input type="reset" value="Reset" name="add" class="btn btn-danger">
+            <input type="reset" value="Reset" name="reset" class="btn btn-danger">
             <input type="submit" value="Update Request" name="update" class="btn btn-primary">
             </div>
 

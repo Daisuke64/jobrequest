@@ -1,3 +1,12 @@
+<?php
+
+        session_start(); //this will allows us to use the $_SESSION variables
+        if($_SESSION['logstat'] !="Active"){
+            header('Location: ../loginout.php');
+        }
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,6 +30,7 @@
         }
         #botton1:hover{
             background-color: red;
+            text-decoration: none;
         }
         #botton2{
             height: 320px; 
@@ -48,29 +58,40 @@
     </style>
 </head>
 <body>
-    <div class="jumbotron bg-primary text-white">
+    <div class="jumbotron bg-primary text-white text-center">
         <h1 class="display-4">Management Menu</h1>
     </div>
 
-    <div class="container p-0 my-5 text-white">
+    <nav class="navbar navbar-expand-sm navbar-dark fixed-top">
+        <a class="navbar-brand" href="../index.php">Logout</a>
+    </nav>
+
+
+    <div class="container p-0 my-5">
        <div class="row">
             <div class="col-sm-4">
-                <div class="rounded text-center py-5" id="botton1">
+                <a href="admin_list_requestor.php" class="text-white" style="text-decoration: none;">
+                    <div class="rounded text-center py-5" id="botton1">
                     <h1><i class="fas fa-users fa-4x"></i></h1>
                     <h3>Requestor List</h3>
-                </div>
+                    </div>
+                </a>
             </div>
             <div class="col-sm-4">
-                <div class="rounded text-center py-5" id="botton2">
+                <a href="admin_list_pen.php" class="text-white" style="text-decoration: none;">
+                    <div class="rounded text-center py-5" id="botton2">
                     <h1><i class="fas fa-archive fa-4x"></i></h1>
                     <h3>Pending Requests</h3>
-                </div>
+                    </div>
+                </a>
             </div>
             <div class="col-sm-4">
-                <div class="rounded text-center py-5" id="botton3">
+                <a href="admin_list_decided.php" class="text-white" style="text-decoration: none;">
+                    <div class="rounded text-center py-5" id="botton3">
                     <h1><i class="fas fa-dove fa-4x"></i></h1>
                     <h3>Decided Requests</h3>
-                </div>
+                    </div>
+                </a>
             </div>
         </div>
     </div>
